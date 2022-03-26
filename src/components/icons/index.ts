@@ -4,3 +4,12 @@ export interface IconProps {
 
 export * from "./MoonIcon";
 export * from "./SearchIcon";
+export * from "./PostIcon";
+export * from "./ViewIcon";
+export * from "./TagIcon";
+export * from "./GithubLogo";
+export * from "./InstagramLogo";
+
+export * from "./YoutubeLogo";
+
+export * from "./SlashIcon";

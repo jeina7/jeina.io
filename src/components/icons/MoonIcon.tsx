@@ -3,7 +3,11 @@ import { IconProps } from ".";
 
 export const MoonIcon: React.FC<IconProps> = ({ className }) => {
   return (
-    <div className={`flex items-center justify-center pl-0.5 ${className}`}>
+    <div
+      className={`flex items-center justify-center pl-0.5 ${
+        className ? className : ""
+      }`}
+    >
       <svg
         width="16"
         height="17"

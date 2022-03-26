@@ -3,7 +3,11 @@ import { IconProps } from ".";
 
 export const SearchIcon: React.FC<IconProps> = ({ className }) => {
   return (
-    <div className={`flex items-center justify-center ${className}`}>
+    <div
+      className={`flex items-center justify-center ${
+        className ? className : ""
+      }`}
+    >
       <svg
         width="16"
         height="16"
