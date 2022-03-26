@@ -1,0 +1,7 @@
+.mdx p {
+  margin-bottom: 1rem;
+}
+
+.mdx .katex-display {
+  margin: 2.5rem 0;
+}

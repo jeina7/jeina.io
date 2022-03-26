@@ -1,4 +1,5 @@
 @import "font";
+@import "mdx";
 
 @tailwind base;
 @tailwind components;

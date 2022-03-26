@@ -47,11 +47,13 @@ const Posts = ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
 export const getStaticProps: GetStaticProps<{
   posts: posts;
 }> = async () => {
-  const postFiles = fs.readdirSync("public/posts", "utf-8");
+  const postSlugs = fs.readdirSync("public/posts", "utf-8");
   let posts: posts = {};
-  postFiles.forEach((fileName) => {
-    const postSlug = fileName.split(".")[0];
-    const postFile = fs.readFileSync(`public/posts/${fileName}`, "utf-8");
+  postSlugs.forEach((postSlug) => {
+    const postFile = fs.readFileSync(
+      `public/posts${postSlug}/${postSlug}.mdx`,
+      "utf-8"
+    );
     const { data: metaData } = matter(postFile);
     posts[postSlug] = metaData;
   });

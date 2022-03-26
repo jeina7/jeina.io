@@ -10,7 +10,32 @@ import { serialize } from "next-mdx-remote/serialize";
 import Head from "next/head";
 import Image from "next/image";
 import path from "path";
+import React from "react";
+import rehypeKatex from "rehype-katex";
+import remarkMath from "remark-math";
 import { SlashIcon } from "~/components";
+
+const mdxComponents = {
+  Image: ({
+    w,
+    src,
+    width,
+    height,
+    alt,
+  }: {
+    w: string;
+    src: string;
+    width: number;
+    height: number;
+    alt: string;
+  }) => (
+    <div className="flex items-center justify-center w-full mt-10 mb-14">
+      <div className={`flex overflow-hidden rounded-lg ${w}`}>
+        <Image src={src} alt={alt} height={height} width={width} />
+      </div>
+    </div>
+  ),
+};
 
 const Post = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
@@ -24,10 +49,10 @@ const Post = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
       </p>
 
       <div className="w-full font-light leading-more-relaxed mdx">
-        <MDXRemote {...post.content} />
+        <MDXRemote {...post.content} components={mdxComponents} />
       </div>
 
-      <SlashIcon className="mt-21 mb-11" />
+      <SlashIcon className="my-20" />
 
       <div className="flex flex-col items-center mb-20 space-y-3">
         <p className="text-xs tracking-widest font-extralight">
@@ -63,11 +88,19 @@ export const getStaticProps: GetStaticProps<{
   };
 }> = async ({ params }) => {
   const postFile = fs.readFileSync(
-    path.join(`public/posts/${params?.postSlug}.mdx`),
+    path.join(`public/posts/${params?.postSlug}/${params?.postSlug}.mdx`),
     "utf-8"
   );
   const { data: metaData, content } = matter(postFile);
-  const post = { metaData, content: await serialize(content) };
+  const post = {
+    metaData,
+    content: await serialize(content, {
+      mdxOptions: {
+        remarkPlugins: [remarkMath],
+        rehypePlugins: [rehypeKatex as any],
+      },
+    }),
+  };
 
   return {
     props: { post },
@@ -75,12 +108,12 @@ export const getStaticProps: GetStaticProps<{
 };
 
 export const getStaticPaths: GetStaticPaths = () => {
-  const postFiles = fs.readdirSync("public/posts", "utf-8");
+  const postSlugs = fs.readdirSync("public/posts", "utf-8");
   return {
-    paths: postFiles.map((fileName) => {
+    paths: postSlugs.map((postSlug) => {
       return {
         params: {
-          postSlug: fileName.split(".")[0],
+          postSlug,
         },
       };
     }),
