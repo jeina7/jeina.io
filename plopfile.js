@@ -39,4 +39,27 @@ module.exports = function (plop) {
       },
     ],
   });
+
+  plop.setGenerator("component", {
+    description: "Generates component template",
+    prompts: [
+      {
+        type: "input",
+        name: "name",
+        message: "What is your component name?",
+      },
+    ],
+    actions: [
+      {
+        type: "add",
+        path: "src/components/{{pascalCase name}}.tsx",
+        templateFile: "plop-templates/component.tsx.hbs",
+      },
+      {
+        type: "append",
+        path: "src/components/index.ts",
+        template: `export * from "./{{pascalCase name}}";\n`,
+      },
+    ],
+  });
 };

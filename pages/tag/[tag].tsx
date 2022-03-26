@@ -8,7 +8,7 @@ import type {
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
-import { ViewIcon } from "~/components";
+import { PostCard, ViewIcon } from "~/components";
 import { posts } from "~/utils/types";
 
 const Tag = ({
@@ -33,22 +33,13 @@ const Tag = ({
           .map((postSlug) => {
             const post = posts[postSlug];
             return (
-              <Link key={postSlug} href={`/post/${postSlug}`} passHref>
-                <div className="flex flex-col w-full cursor-pointer">
-                  <div className="flex items-center justify-between w-full mb-2">
-                    <span className="text-lg font-bold">{post.title}</span>
-                    <div className="flex">
-                      <ViewIcon className="text-gray-600" />
-                      <span className="text-xxs ml-0.5 text-gray-600">
-                        {new Intl.NumberFormat().format(post.views)}
-                      </span>
-                    </div>
-                  </div>
-                  <p className="w-full text-sm font-thin text-justify leading-more-relaxed">
-                    {post.description}
-                  </p>
-                </div>
-              </Link>
+              <PostCard
+                key={postSlug}
+                postSlug={postSlug}
+                postTitle={post.title}
+                views={post.views}
+                description={post.description}
+              />
             );
           })}
       </div>
@@ -72,8 +63,6 @@ export const getStaticProps: GetStaticProps<{
     if (params && tags.includes(params.tag as string))
       posts[postSlug] = metaData;
   });
-
-  console.log(posts);
 
   return {
     props: { posts, tag: params?.tag as string },

@@ -13,3 +13,5 @@ export * from "./InstagramLogo";
 export * from "./YoutubeLogo";
 
 export * from "./SlashIcon";
+
+export * from "./SunIcon";

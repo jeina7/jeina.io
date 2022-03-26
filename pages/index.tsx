@@ -4,7 +4,7 @@ import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { PostIcon, TagIcon, ViewIcon } from "~/components";
+import { PostCard, PostIcon, TagIcon, ViewIcon } from "~/components";
 import { posts } from "~/utils/types";
 
 const labelLightBackgrounds = [
@@ -32,13 +32,13 @@ const Home = ({
       <div className="flex items-center justify-between w-full my-17">
         <div className="flex flex-col">
           <p className="mb-2 text-4xl font-extrabold">Jeina</p>
-          <p className="mb-1.5 text-xs text-gray-600">
+          <p className="mb-1.5 text-xs text-gray-600 dark:text-gray-300">
             <span className="mr-1 font-extralight">
               Full Stack Developer in
             </span>
             <span className="font-bold">GROOMATA</span>
           </p>
-          <p className="text-xs font-thin leading-relaxed w-80">
+          <p className="text-xs font-thin leading-relaxed text-gray-800 w-80 dark:text-gray-100">
             그루마타에서 풀스택 개발자를 맡고 있습니다. 웹 개발과 서버리스,
             리액트와 넥스트 제이에스를 가르칩니다.
           </p>
@@ -63,22 +63,13 @@ const Home = ({
           {topPostSlugs.map((postSlug) => {
             const post = posts[postSlug];
             return (
-              <div key={postSlug} className="flex flex-col w-full">
-                <div className="flex items-center justify-between w-full mb-2">
-                  <span className="text-lg font-bold">{post.title}</span>
-
-                  <div className="flex">
-                    <ViewIcon className="text-gray-600" />
-                    <span className="text-xxs ml-0.5 text-gray-600">
-                      {new Intl.NumberFormat().format(post.views)}
-                    </span>
-                  </div>
-                </div>
-
-                <p className="w-full text-sm font-thin text-justify leading-more-relaxed">
-                  {post.description}
-                </p>
-              </div>
+              <PostCard
+                key={postSlug}
+                postSlug={postSlug}
+                postTitle={post.title}
+                views={post.views}
+                description={post.description}
+              />
             );
           })}
         </div>
@@ -104,7 +95,7 @@ const Home = ({
               );
 
               return (
-                <Link key={tag} href={`/tags/${tag}`} passHref>
+                <Link key={tag} href={`/tag/${tag}`} passHref>
                   <div
                     className={`inline-block px-2.5 py-1 text-white font-extralight rounded-full cursor-pointer text-xxs mr-1 mb-1 ${poppedBackground}`}
                   >
