@@ -1,10 +1,12 @@
-import type { NextPage } from "next";
+import fs from "fs";
+import matter from "gray-matter";
+import type { GetStaticProps, InferGetStaticPropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { ViewIcon } from "~/components";
-import { posts } from "~/data/posts";
+import { posts } from "~/utils/types";
 
-const Posts: NextPage = () => {
+const Posts = ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <>
       <Head>
@@ -14,11 +16,10 @@ const Posts: NextPage = () => {
       <div className="flex-col mb-24 space-y-16 mt-21">
         {Object.keys(posts)
           .sort((postSlug1, postSlug2) =>
-            posts[postSlug1].views > posts[postSlug2].views ? -1 : 1
+            posts[postSlug1].date > posts[postSlug2].date ? -1 : 1
           )
           .map((postSlug) => {
             const post = posts[postSlug];
-
             return (
               <Link key={postSlug} href={`/post/${postSlug}`} passHref>
                 <div className="flex flex-col w-full cursor-pointer">
@@ -41,6 +42,23 @@ const Posts: NextPage = () => {
       </div>
     </>
   );
+};
+
+export const getStaticProps: GetStaticProps<{
+  posts: posts;
+}> = async () => {
+  const postFiles = fs.readdirSync("public/posts", "utf-8");
+  let posts: posts = {};
+  postFiles.forEach((fileName) => {
+    const postSlug = fileName.split(".")[0];
+    const postFile = fs.readFileSync(`public/posts/${fileName}`, "utf-8");
+    const { data: metaData } = matter(postFile);
+    posts[postSlug] = metaData;
+  });
+
+  return {
+    props: { posts },
+  };
 };
 
 export default Posts;

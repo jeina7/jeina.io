@@ -1,35 +1,44 @@
+import fs from "fs";
+import matter from "gray-matter";
 import type {
   GetStaticPaths,
   GetStaticProps,
   InferGetStaticPropsType,
-  NextPage,
 } from "next";
+import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
+import { serialize } from "next-mdx-remote/serialize";
 import Head from "next/head";
 import Image from "next/image";
+import path from "path";
 import { SlashIcon } from "~/components";
-import { post, posts } from "~/data/posts";
 
 const Post = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <>
       <Head>
-        <title></title>
+        <title>{`${post.metaData.title} - Jeina`}</title>
       </Head>
 
       <p className="mb-5 text-4xl font-black leading-snug mt-18">
-        {post.title}
+        {post.metaData.title}
       </p>
-      <p className="font-light leading-more-relaxed">{post.body}</p>
+
+      <div className="w-full font-light leading-more-relaxed mdx">
+        <MDXRemote {...post.content} />
+      </div>
 
       <SlashIcon className="mt-21 mb-11" />
 
       <div className="flex flex-col items-center mb-20 space-y-3">
         <p className="text-xs tracking-widest font-extralight">
-          {new Date(Date.parse(post.date)).toLocaleDateString("en-En", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          })}
+          {new Date(Date.parse(post.metaData.date)).toLocaleDateString(
+            "en-En",
+            {
+              month: "short",
+              day: "2-digit",
+              year: "numeric",
+            }
+          )}
         </p>
         <div className="w-8 h-8 overflow-hidden rounded-full">
           <Image
@@ -45,21 +54,33 @@ const Post = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
   );
 };
 
-export const getStaticProps: GetStaticProps<{ post: post }> = async ({
-  params,
-}) => {
-  const post = posts[params?.postSlug as string];
+export const getStaticProps: GetStaticProps<{
+  post: {
+    metaData: {
+      [key: string]: any;
+    };
+    content: MDXRemoteSerializeResult<Record<string, unknown>>;
+  };
+}> = async ({ params }) => {
+  const postFile = fs.readFileSync(
+    path.join(`public/posts/${params?.postSlug}.mdx`),
+    "utf-8"
+  );
+  const { data: metaData, content } = matter(postFile);
+  const post = { metaData, content: await serialize(content) };
+
   return {
-    props: { postSlug: params?.postSlug, post },
+    props: { post },
   };
 };
 
 export const getStaticPaths: GetStaticPaths = () => {
+  const postFiles = fs.readdirSync("public/posts", "utf-8");
   return {
-    paths: Object.keys(posts).map((postSlug) => {
+    paths: postFiles.map((fileName) => {
       return {
         params: {
-          postSlug,
+          postSlug: fileName.split(".")[0],
         },
       };
     }),
