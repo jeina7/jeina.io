@@ -3,6 +3,7 @@ import matter from "gray-matter";
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import { PostIcon, TagIcon, ViewIcon } from "~/components";
 import { posts } from "~/utils/types";
 
@@ -103,12 +104,13 @@ const Home = ({
               );
 
               return (
-                <div
-                  key={tag}
-                  className={`inline-block px-2.5 py-1 text-white font-extralight rounded-full text-xxs mr-1 mb-1 ${poppedBackground}`}
-                >
-                  {tag}
-                </div>
+                <Link key={tag} href={`/tags/${tag}`} passHref>
+                  <div
+                    className={`inline-block px-2.5 py-1 text-white font-extralight rounded-full cursor-pointer text-xxs mr-1 mb-1 ${poppedBackground}`}
+                  >
+                    {tag}
+                  </div>
+                </Link>
               );
             })}
           </div>
@@ -147,7 +149,6 @@ export const getStaticProps: GetStaticProps<{
       }, new Set<string>())
     ),
   ];
-  console.log(tags);
 
   return {
     props: { posts, tags, topPostSlugs },

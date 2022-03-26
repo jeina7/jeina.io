@@ -1,19 +1,31 @@
 import fs from "fs";
 import matter from "gray-matter";
-import type { GetStaticProps, InferGetStaticPropsType } from "next";
+import type {
+  GetStaticPaths,
+  GetStaticProps,
+  InferGetStaticPropsType,
+} from "next";
 import Head from "next/head";
 import Link from "next/link";
+import React from "react";
 import { ViewIcon } from "~/components";
 import { posts } from "~/utils/types";
 
-const Posts = ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Tag = ({
+  tag,
+  posts,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <>
       <Head>
-        <title>Posts - Jeina</title>
+        <title>{`${tag} - Jeina`}</title>
       </Head>
 
-      <div className="flex-col mb-24 space-y-13 mt-21">
+      <p className="flex items-center justify-start w-full mb-12 text-4xl font-black mt-21">
+        #{tag}
+      </p>
+
+      <div className="flex-col mb-24 space-y-13">
         {Object.keys(posts)
           .sort((postSlug1, postSlug2) =>
             posts[postSlug1].date > posts[postSlug2].date ? -1 : 1
@@ -46,21 +58,58 @@ const Posts = ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
 
 export const getStaticProps: GetStaticProps<{
   posts: posts;
-}> = async () => {
+  tag: string;
+}> = async ({ params }) => {
   const postSlugs = fs.readdirSync("public/posts", "utf-8");
   let posts: posts = {};
   postSlugs.forEach((postSlug) => {
     const postFile = fs.readFileSync(
-      `public/posts${postSlug}/${postSlug}.mdx`,
+      `public/posts/${postSlug}/${postSlug}.mdx`,
+      "utf-8"
+    );
+    const { data: metaData } = matter(postFile);
+    const tags = metaData["tags"];
+    if (params && tags.includes(params.tag as string))
+      posts[postSlug] = metaData;
+  });
+
+  console.log(posts);
+
+  return {
+    props: { posts, tag: params?.tag as string },
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = () => {
+  const postSlugs = fs.readdirSync("public/posts", "utf-8");
+  let posts: posts = {};
+  postSlugs.forEach((postSlug) => {
+    const postFile = fs.readFileSync(
+      `public/posts/${postSlug}/${postSlug}.mdx`,
       "utf-8"
     );
     const { data: metaData } = matter(postFile);
     posts[postSlug] = metaData;
   });
 
+  const tags = [
+    ...Array.from(
+      Object.keys(posts).reduce((prev, curr) => {
+        return new Set([...Array.from(prev), ...posts[curr].tags]);
+      }, new Set<string>())
+    ),
+  ];
+
   return {
-    props: { posts },
+    paths: tags.map((tag) => {
+      return {
+        params: {
+          tag,
+        },
+      };
+    }),
+    fallback: false,
   };
 };
 
-export default Posts;
+export default Tag;
