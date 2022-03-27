@@ -7,13 +7,49 @@ import Link from "next/link";
 import { PostCard, PostIcon, TagIcon, ViewIcon } from "~/components";
 import { posts } from "~/utils/types";
 
-const labelLightBackgrounds = [
-  "bg-label-light-pink",
-  "bg-label-light-mint",
-  "bg-label-light-green",
-  "bg-label-light-blue",
-  "bg-label-light-rose",
-  "bg-label-light-mango",
+const labelColors = [
+  [
+    "bg-pink-950",
+    "border-pink-950",
+    "dark:bg-pink-50",
+    "dark:border-pink-850",
+    "dark:text-pink-850",
+  ],
+  [
+    "bg-mint-950",
+    "border-mint-950",
+    "dark:bg-mint-50",
+    "dark:border-mint-850",
+    "dark:text-mint-850",
+  ],
+  [
+    "bg-green-950",
+    "border-green-950",
+    "dark:bg-green-50",
+    "dark:border-green-850",
+    "dark:text-green-850",
+  ],
+  [
+    "bg-blue-950",
+    "border-blue-950",
+    "dark:bg-blue-50",
+    "dark:border-blue-850",
+    "dark:text-blue-850",
+  ],
+  [
+    "bg-rose-950",
+    "border-rose-950",
+    "dark:bg-rose-50",
+    "dark:border-rose-850",
+    "dark:text-rose-850",
+  ],
+  [
+    "bg-mango-950",
+    "border-mango-950",
+    "dark:bg-mango-50",
+    "dark:border-mango-850",
+    "dark:text-mango-850",
+  ],
 ];
 
 const Home = ({
@@ -21,7 +57,7 @@ const Home = ({
   tags,
   topPostSlugs,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  let poppingLabelBackgrounds = [...labelLightBackgrounds];
+  let poppingLabelColors = [...labelColors];
 
   return (
     <>
@@ -54,7 +90,7 @@ const Home = ({
       </div>
 
       <div className="flex flex-col w-full">
-        <div className="flex items-center justify-start mb-4">
+        <div className="flex items-center justify-start mb-4 dark:text-white">
           <span className="mr-1.5 text-3xl font-extrabold">Post</span>
           <PostIcon className="mt-0.5" />
         </div>
@@ -75,29 +111,28 @@ const Home = ({
         </div>
 
         <div className="flex flex-col w-full mb-24">
-          <div className="flex items-center justify-start mb-4">
+          <div className="flex items-center justify-start mb-4 dark:text-white">
             <span className="mr-1.5 text-3xl font-extrabold">Tags</span>
             <TagIcon />
           </div>
 
-          <div>
+          <div className="text-white text-xxs font-extralight">
             {tags.map((tag, idx) => {
-              if (idx % labelLightBackgrounds.length == 0) {
-                poppingLabelBackgrounds = [...labelLightBackgrounds];
+              if (idx % labelColors.length == 0) {
+                poppingLabelColors = [...labelColors];
               }
 
               const poppingIdx = Math.floor(
-                Math.random() * poppingLabelBackgrounds.length
+                Math.random() * poppingLabelColors.length
               );
-              const poppedBackground = poppingLabelBackgrounds.splice(
-                poppingIdx,
-                1
-              );
+              const poppedColors = poppingLabelColors.splice(poppingIdx, 1)[0];
 
               return (
                 <Link key={tag} href={`/tag/${tag}`} passHref>
                   <div
-                    className={`inline-block px-2.5 py-1 text-white font-extralight rounded-full cursor-pointer text-xxs mr-1 mb-1 ${poppedBackground}`}
+                    className={`inline-block px-2.5 py-1 rounded-full cursor-pointer mr-1.5 mb-1.5 border-0.5 border-opacity-20 ${poppedColors.join(
+                      " "
+                    )}`}
                   >
                     {tag}
                   </div>

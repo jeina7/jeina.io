@@ -22,12 +22,36 @@ module.exports = {
           800: "#2F2F2F",
           900: "#121212",
         },
-        "label-light-pink": "#F52C8F",
-        "label-light-mint": "#00D4D0",
-        "label-light-green": "#00BF93",
-        "label-light-blue": "#1F74FF",
-        "label-light-rose": "#FF6178",
-        "label-light-mango": "#FFB700",
+        pink: {
+          50: "rgb(204 49 124 / 18%)",
+          850: "#FB46A2",
+          950: "#F52C8F",
+        },
+        mint: {
+          50: "rgb(0 107 117 / 18%)",
+          850: "#00E4F8",
+          950: "#00D4D0",
+        },
+        green: {
+          50: "rgb(52 193 130 / 18%)",
+          850: "#35C081",
+          950: "#00BF93",
+        },
+        blue: {
+          50: "rgb(48 80 171 / 18%)",
+          850: "#8BA1DE",
+          950: "#1F74FF",
+        },
+        rose: {
+          50: "rgb(182 2 5 / 18%)",
+          850: "#FF7275",
+          950: "#FF6178",
+        },
+        mango: {
+          50: "rgb(247 225 1 / 18%)",
+          850: "#F4DB01",
+          950: "#FFB700",
+        },
       },
       spacing: {
         13: "52px",
@@ -49,6 +73,9 @@ module.exports = {
       },
       lineHeight: {
         "more-relaxed": 1.8,
+      },
+      borderWidth: {
+        0.5: "0.5px",
       },
     },
   },
