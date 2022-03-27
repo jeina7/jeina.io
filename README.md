@@ -1,6 +1,6 @@
 # jeina.io
 
-✨ Visit: https://jeina.io/
+✨ Visit - https://jeina.io/
 
 ### Made by
 
