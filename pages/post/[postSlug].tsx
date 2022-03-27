@@ -48,7 +48,7 @@ const Post = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
         {post.metaData.title}
       </p>
 
-      <div className="w-full font-light leading-more-relaxed mdx">
+      <div className="w-full font-extralight leading-more-relaxed mdx">
         <MDXRemote {...post.content} components={mdxComponents} />
       </div>
 

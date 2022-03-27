@@ -20,7 +20,7 @@ export const SlashIcon: React.FC<IconProps> = ({ className }) => {
           y1="29.1033"
           x2="29.1075"
           y2="0.818982"
-          stroke="#121212"
+          stroke="currentColor"
           strokeWidth="0.5"
         />
       </svg>

@@ -23,7 +23,7 @@ const About: NextPage = () => {
 
         <div className="flex flex-col items-center">
           <p className="mb-3 text-4xl font-extrabold">Jeina</p>
-          <p className="text-xs text-gray-600 mb-13">
+          <p className="text-xs text-gray-600 mb-13 dark:text-gray-300">
             <span className="mr-1 font-extralight">
               Full Stack Developer in
             </span>
