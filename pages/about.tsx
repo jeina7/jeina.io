@@ -22,13 +22,11 @@ const About: NextPage = () => {
 
         <div className="flex flex-col items-center mb-40">
           <p className="mb-3 text-4xl font-extrabold">Jeina</p>
-          <p className="text-xs text-gray-600 mb-13 dark:text-gray-300">
-            <span className="mr-1 font-extralight">
-              Full Stack Developer in
-            </span>
-            <span className="font-bold">GROOMATA</span>
+          <p className="text-xs text-gray-600 mb-13 dark:text-gray-300 font-inter">
+            <span className="mr-1 font-light">Data Engineer in</span>
+            <span className="font-bold">KAKAO</span>
           </p>
-          <div className="flex flex-col items-center text-sm leading-more-relaxed font-extralight mb-">
+          <div className="flex flex-col items-center text-sm leading-more-relaxed font-extralight sm:space-y-1">
             <p className="mb-2 sm:mb-0">
               다양한 분야의 기술에 관심이 많습니다.
             </p>
