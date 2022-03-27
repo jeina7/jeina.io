@@ -67,8 +67,8 @@ const Home = ({
 
       <div className="flex items-start justify-between w-full sm:items-center my-18">
         <div className="flex flex-col">
-          <p className="mb-2 text-4xl font-extrabold">Jeina</p>
-          <p className="mb-1.5 text-xs text-gray-600 dark:text-gray-300">
+          <p className="mb-2 text-4xl font-extrabold font-inter">Jeina</p>
+          <p className="mb-1.5 text-xs text-gray-600 dark:text-gray-300 font-inter">
             <span className="mr-1 font-extralight">
               Full Stack Developer in
             </span>
@@ -92,7 +92,9 @@ const Home = ({
 
       <div className="flex flex-col w-full mb-15 sm:mb-24">
         <div className="flex items-center justify-start mb-2.5 sm:mb-4 dark:text-white">
-          <span className="mr-1.5 text-3xl font-extrabold">Post</span>
+          <span className="mr-1.5 text-3xl font-extrabold font-inter">
+            Post
+          </span>
           <PostIcon className="mt-0.5" />
         </div>
 
@@ -113,7 +115,9 @@ const Home = ({
 
         <div className="flex flex-col w-full">
           <div className="flex items-center justify-start mb-4 dark:text-white">
-            <span className="mr-1.5 text-3xl font-extrabold">Tags</span>
+            <span className="mr-1.5 text-3xl font-extrabold font-inter">
+              Tags
+            </span>
             <TagIcon />
           </div>
 

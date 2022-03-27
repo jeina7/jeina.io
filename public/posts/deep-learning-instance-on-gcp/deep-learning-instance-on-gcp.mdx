@@ -1,0 +1,411 @@
+---
+title: GCP 위에 딥러닝을 위한 VM 인스턴스 만들기 (feat. GPU)
+views: 16484
+date: "2019-05-11"
+tags: ["GPU", "Google Cloud Platform", "딥러닝", "server"]
+description: Google Cloud Platform에서 무료로 제공하는 300달러 크레딧으로 스펙 좋은 딥러닝 환경을 빠르게 구축하기
+---
+
+딥러닝을 공부하고 몇 가지 프로젝트를 진행하다보면 점점 커지는 데이터와 방대한 학습으로 CPU의 한계를 느끼고
+GPU를 알아보게 되는 경우가 많습니다. 무료로 GPU를 사용할 수 있는 구글 Colab이 존재하긴 하지만, 어쩔 수 없는
+약간의 버퍼링과 언제 끊어질 지 모르는 네트워크라는 두 가지 단점으로 인해 다른 대안이 필요할 때가 있죠.
+
+이에 대한 해결책으로 위의 두가지보다 편하고 안정적인 환경을 만들 수 있는 **GCP**가 있습니다.
+이 글의 목표는 Local에서 쓰는 jupyter notebook처럼 편하면서, GPU까지 이용해서 빠른 학습을 시킬 수 있는
+환경을 만드는 것입니다.
+
+# 1. GCP 위의 GPU 생태계
+
+Google의 [Google Cloud Platform](https://cloud.google.com/) 서비스는 모든 계정 당 최초 한 번, 유효기간 1년의 300달러 크레딧을 제공합니다.
+
+[GCP에서 무료로 제공하는 스펙](https://cloud.google.com/free/docs/gcp-free-tier?authuser=2&hl=ko#how-to-upgrade)을 보면 중간쯤
+**인스턴스에 GPU를 추가하는 건 계정을 업그레이드 해야 가능하다**는 내용이 있는데, 여기서 계정 업그레이드란 무료 크레딧을 모두 사용하고 나서
+유료 결제가 가능하도록 결제정보를 추가하는 걸 뜻하기 때문에 결제 정보만 추가하면 GPU가 있는 인스턴스를 300불만큼은 무료로 사용할 수 있습니다.
+물론 300불을 다 쓰면 그 후에는 결제를 해야 쓸 수 있죠.
+
+그렇다면 300불은 어느 정도를 쓸 수 있는 금액일까요?
+
+먼저 GCP에서 제공하는 대표적인 세 가지 GPU - K80, P100, V100의 스펙은 다음과 같습니다. K80이 가장 저렴하면서 하위 모델이고, V100이 가장 좋은 모델입니다.
+
+<Image src="/posts/deep-learning-instance-on-gcp/k80.png" height={39} />
+<Image src="/posts/deep-learning-instance-on-gcp/p100v100.png" height={85} />
+
+> 자세한 스펙 비교는 [여기](https://www.xcelerit.com/computing-benchmarks/insights/nvidia-p100-vs-k80-gpu/)와 [저기](https://www.xcelerit.com/computing-benchmarks/insights/benchmarks-deep-learning-nvidia-p100-vs-v100-gpu/)를 참고하세요.
+
+Amazon에서는 각각 [K80](https://www.amazon.com/Nvidia-Tesla-GDDR5-Cores-Graphic/dp/B00Q7O7PQA) $1,450,
+[P100](https://www.amazon.com/NVIDIA-Tesla-P100-computing-processor/dp/B06WV7HFWV/ref=sr_1_1?keywords=gpu+p100&qid=1557410876&s=electronics&sr=1-1) $4,300,
+[V100](https://www.amazon.com/PNY-TCSV100MPCIE-PB-Nvidia-Tesla-v100/dp/B076P84525/ref=sr_1_fkmrnull_2?keywords=gpu+v100&qid=1557410908&s=gateway&sr=8-2-fkmrnull) $6,098
+정도 하는데요, 그렇다면 이 모델들을 GCP에서 사용한다면 금액이 얼마나 나올지 [GCP 가격 계산기](https://cloud.google.com/products/calculator/?hl=ko)로
+확인해보겠습니다.
+
+다음 세 데이터는 GPU 종류만 제외하고 나머지는 아래의 공통 설정으로 계산하였습니다.
+
+- 시간 : 약 217 시간/1개월 (하루 10시간, 한 달에 20일 사용)
+- GPU 개수 : 1개
+- CPU : 4코어 / 15GB (n1-standard-4)
+- SSD : 375GB x 1
+- Location : Oregon (us-west1)
+
+<Image src="/posts/deep-learning-instance-on-gcp/gcp-price.jpeg" height={201} />
+
+각각 1시간 가격으로 따지면 K80은 $0.66, P100은 $1.64, V100은 $2.63 정도의 가격으로 사용하게 됩니다.
+300불의 무료 크레딧으로 V100을 사용한다면 보름을 넘기기 어려울 수도 있지만, 아직 한 가지 옵션이 더 남아있습니다.
+
+위의 표 중 **VM class : regular** 라고 써있는 부분은, regular 이외에 **Preemptible**(선점형)이라는 옵션이 한 가지 더 있습니다.
+선점형이란 최대 24시간까지만 유지가 되고, 24시간 내에도 만약 인스턴스 활동이 없다면 자동으로 꺼질 수 있는 옵션입니다.
+24시간 이상의 시간동안 인스턴스를 계속 켜둘 필요가 없는 경우에는 이 옵션을 사용하면 가격이
+[최대 80%까지 저렴해 질 수 있다](https://cloud.google.com/preemptible-vms/?hl=ko)고 합니다.
+
+<Image
+  src="/posts/deep-learning-instance-on-gcp/preemptible.jpeg"
+  height={169}
+/>
+
+실제로 적용해보면 가격이 regular였을 때보다 **70%정도** 저렴해진 것을 확인할 수 있습니다.
+K80은 200시간 사용하는데 한 달에 약 5만원이니, 이 정도라면 부담없이 쓸 수 있습니다.
+
+# 2. 계정 생성 및 $300 크레딧 받기
+
+GCP를 사용하기 위해서 가장 먼저 [Google Cloud Platform](https://cloud.google.com/)에서 로그인을 한 후
+**무료로 사용해보기**를 클릭해서 크레딧을 받고 시작합니다. 중간에 결제정보 입력이 있는데,
+이는 크레딧을 다 쓰기 전, 그리고 직접 유료 계정으로 업그레이드 하기 전까지는 결제되지 않습니다.
+
+무사히 로그인이 되면, 왼쪽 네비게이션 바 중 결제 탭에서 아래와 같이 $300의 크레딧을 확인할 수 있습니다.
+
+<Image src="/posts/deep-learning-instance-on-gcp/credits.jpeg" height={220} />
+
+# 3. 프로젝트 생성하기
+
+계정이 생성되었다면 기본 프로젝트인 My First Project가 자동으로 만들어집니다.
+이를 그대로 사용해도 되고, 원한다면 맨 위 상단바의 My First Project를 눌러 새 프로젝트를 생성해서 사용해도 됩니다.
+
+# 4. 할당량 (Quota) 신청
+
+VM 인스턴스를 본격적으로 생성하기 전에, 처음 GCP에 가입한 유저라면 먼저 **할당량을 신청**해야 합니다.
+내 계정에 할당할 수 있는 GPU 개수를 증가시켜달라고 신청하는 건데, 신청을 올리면 직원들이 확인하고 직접
+할당량을 증가시킨 후 메일이 옵니다. 번거롭지만 무분별한 사용이나 할당을 방지하기 위한 장치인 듯 합니다.
+신청하면 메일 회신이 오기까지 몇 시간정도 걸릴 수 있으니 여유를 갖고 신청하시는 것을 추천드립니다.
+
+왼쪽 네비게이션 바에서 'IAM 및 관리자' > '할당량' 에서 할당량 신청을 할 수 있는데요,
+할당량 신청은 유료로 결제될 수 있는 카드를 등록해야만 할 수 있어 최초 신청하는 경우에는 계정을 업그레이드 해야 한다고 뜰 수 있습니다.
+
+계정을 업그레이드 한 뒤 '측정항목'을 누르면 원하는 리소스를 선택할 수 있는데요,
+처음에는 모든 항목이 선택된 상태이므로 선택 해제를 한 뒤, 'gpu'를 검색합니다.
+여기서 중요한 건, 아래 사진의 맨 위에 있는 GPUs(all regions)는 기본 할당량이 0이기 때문에 꼭 포함해서 할당량 신청을 해야합니다.
+그 외의 GPU모델들은 기본 할당량이 1입니다. 즉, 1개까지는 할당량 신청 없이도 사용이 가능합니다.
+단, 2개 이상씩 사용하고 싶다면 함께 할당량 증가를 신청합니다.
+그 외에 저는 `K80`, `P100` 각각 regular와 preemptible까지, 총 다섯 가지를 선택하였습니다.
+
+<Image src="/posts/deep-learning-instance-on-gcp/quota.png" height={261} />
+
+> 만약 여기에서 GPU를 검색해도 아래 사진과 같은 리스트가 보이지 않는다면 최초 계정을 만든 후 Compute Engine을 활성화하기 전이기 때문일 수 있습니다. 리스트가 보이지 않을 경우 왼쪽 네비게이션 바에서 "Compute Engine" 을 클릭하면 **Compute Engine을 준비하는 중이며 1분 이상 걸릴 수 있다**는 안내를 확인할 수 있습니다. 이 준비가 모두 끝난 후 할당량에 가서 다시 시도하면 리스트에 나타납니다.
+
+그 다음 위치는 원하는 지역을 선택하고, 맨 밑의 **글로벌**은 꼭 선택해줍니다. 저는 us-west1을 선택하였습니다.
+
+<Image
+  src="/posts/deep-learning-instance-on-gcp/quota-region.png"
+  height={138}
+/>
+
+모두 선택하면 다음과 같이 필터링된 서비스가 뜨게 됩니다. 맨 오른쪽을 보면 현재 할당량 한도를 알 수 있습니다.
+아래 옵션들을 모두 선택한 뒤 위쪽의 **할당량 수정**을 클릭합니다.
+
+<Image
+  src="/posts/deep-learning-instance-on-gcp/quota-result.png"
+  height={210}
+/>
+
+원하는 한도를 입력하고 맨 아래의 요청 설명도 입력을 합니다. 간단히 입력해도 됩니다.
+
+<Image
+  src="/posts/deep-learning-instance-on-gcp/quota-request.png"
+  w="w-88"
+  width={352}
+  height={600}
+/>
+
+완료를 누르면 신청이 되고 승인 메일만 오면 됩니다.
+
+# 5. 방화벽 열기
+
+기다리는 동안 할 일이 한 가지 있습니다. 인스턴스를 연 후 jupyter notebook과 tensorboard 사용을 위해
+방화벽을 여는 작업이 필요합니다.
+
+> 방화벽 관련 내용은 [이곳](https://mc.ai/gcp-vm%EC%97%90%EC%84%9C-nvidia-gpu%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4%EB%B3%B4%EC%9E%90/)을 참고하였습니다.
+
+네비게이션 바의 '네트워킹' - 'VPC 네트워크' > '방화벽 규칙' 으로 들어갑니다. '방화벽 규칙 만들기'를 선택한 뒤
+jupyter, tensorboard 이름의 두 가지 규칙을 아래와 같이 입력해서 생성합니다.
+이름, 대상 태그, 소스 IP 범위, 그리고 프로토콜 및 포트의 tcp에 다음 내용을 입력하면 됩니다.
+
+<Image src="/posts/deep-learning-instance-on-gcp/firewall.jpeg" height={608} />
+
+이제 VM 인스턴스를 생성할 준비가 모두 끝났습니다. 할당량 승인 메일만 오면 바로 인스턴스를 생성할 수 있습니다.
+
+# 6. VM 인스턴스 생성
+
+저는 할당량 신청을 한 지 한 시간이 조금 넘어서 메일이 도착했습니다. 공식적으로는 business two days
+안에 보내준다고 하는데 생각보다는 빨리 왔어요.
+
+<Image
+  src="/posts/deep-learning-instance-on-gcp/quota-email.jpeg"
+  w="w-100"
+  width={400}
+  height={303}
+/>
+
+할당량이 0 또는 1에서 원하는 숫자로 바뀌었다는 메일이 왔다면 성공입니다.
+다시 GCP로 돌아가서 인스턴스를 마저 생성해보겠습니다.
+
+> 인스턴스의 세부 옵션 등은 [이곳](https://mc.ai/gcp-vm%EC%97%90%EC%84%9C-nvidia-gpu%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4%EB%B3%B4%EC%9E%90/)의 내용을 부분참고 하였습니다.
+
+'컴퓨팅' - 'Compute Engine' > 'VM 인스턴스' 로 들어가 'VM 인스턴스 만들기' 를 클릭한 후 다음과 같이
+이름, 지역, 영역을 입력합니다.
+
+<Image
+  src="/posts/deep-learning-instance-on-gcp/setting-instance.jpeg"
+  w="w-88"
+  width={352}
+  height={518}
+/>
+
+머신 유형은 기본으로 셋팅된 옵션을 사용할 수도, 아니면 맞춤 설정을 할 수도 있습니다.
+GPU는 할당받은 개수 내에서 원하는 만큼 사용하면 됩니다.
+부팅 디스크는 '변경'을 눌러서 SSD 100GB, Ubuntu 16.04 LTS로 설정합니다.
+방화벽에서는 HTTP 트래픽 허용, HTTPS 트래픽 허용을 모두 열어주세요.
+그 아래의 '네트워킹'을 클릭해 네트워크 태그에 jupyter, tensorboard 을 입력해 우리가 이전에
+만들어놓은 방화벽을 사용합니다.
+
+<Image
+  src="/posts/deep-learning-instance-on-gcp/setting-instance-2.png"
+  w="w-88"
+  width={352}
+  height={315}
+/>
+
+마지막으로, 위에서 말했던 선점형 인스턴스를 만들고 싶다면
+'관리' 탭에서 '가용성 정책' > '선점 가능성' 을 '사용'으로 바꿔주면 됩니다.
+
+<Image
+  src="/posts/deep-learning-instance-on-gcp/setting-instance-3.png"
+  w="w-88"
+  width={352}
+  height={529}
+/>
+
+인스턴스 생성을 위한 설정은 여기까지입니다. 제가 한 설정을 모두 정리하면 다음과 같습니다.
+
+- **지역** : us-west1 (Oregon) > us-west1-b
+- **CPU** : 4 vCPU (Memory 20GB)
+- **GPU** : 1 (NVIDIA Tesla K80)
+- **부팅디스크** : 100GB SSD (Ubuntu 16.04 LTS)
+- **네트워킹(방화벽)** : jupyter, tensorboard
+
+오른쪽에서 내가 설정한 인스턴스에 대한 예상 가격을 볼 수 있습니다.
+선점형으로 사용할 경우 한 달에 $148, 일반형으로 사용할 경우에는 $360로 책정되네요.
+이 가격은 한 달 내내 인스턴스를 사용하였을 때의 가격입니다.
+
+<Image
+  src="/posts/deep-learning-instance-on-gcp/expected-price.jpeg"
+  height={355}
+/>
+
+이제 인스턴스 생성하기를 누르면 인스턴스가 생성됩니다. 다만 시간이 조금 걸립니다.
+기다리는 동안 저희는 다음 단계로 넘어가보겠습니다.
+
+# 7. Google Cloud SDK 설치 및 이용
+
+GCP의 VM 인스턴스를 접속하는 방법은 다음과 같이 다섯 가지가 있습니다.
+
+<Image
+  src="/posts/deep-learning-instance-on-gcp/gcp-instance-connect.jpeg"
+  height={117}
+/>
+
+이 중 터미널을 통해 접속하는 방법은 gcloud와 ssh 두 가지인데, ssh는 인증키를 생성하고 그 키를 이용해서
+접속해야하는 번거로움이 있는 반면 gcloud는 크롬에서 로그인이 되어있다면 바로 접속이 가능해서 조금 더 편리합니다.
+
+다만 gcloud를 사용하려면 **Google Cloud SDK**가 사전에 설치되어 있어야 합니다.
+Google Cloud SDK 설치는 **[SDK Document](https://cloud.google.com/sdk/downloads?authuser=2&hl=ko#windows)**를 참고하세요.
+
+저는 Mac 유저이기에.. Mac에 설치하는 방법을 따라해보도록 하겠습니다.
+윈도우의 경우 [여기](https://cloud.google.com/sdk/downloads?authuser=2&hl=ko#windows)에 있는 zip파일을 다운받은 뒤 쉘에서 `gcloud init`을 하면 설치됩니다.
+
+<Image
+  src="/posts/deep-learning-instance-on-gcp/gcloud-install.png"
+  height={208}
+/>
+
+위 내용대로 터미널에 명령어를 입력하면 중간중간 `Y / N` 를 대답해야 하는 질문들이 나옵니다.
+설치하는 directory나 gcloud의 환경변수를 `.bashrc` 또는 `.zshrc` 파일에 추가하겠냐고 물어보는 등의 내용인데,
+적절히 `Y` 또는 공백으로 넘어가시면 됩니다.
+
+완료 후 쉘을 재시작 하고, `gcloud init`을 하면 몇 가지 설정을 하도록 나옵니다.
+계정 설정, 프로젝트 선택 등까지 모두 끝내면 gcloud 설정이 모두 끝나게 됩니다.
+
+다시 GCP 페이지로 넘어가서 'gcloud 명령 보기'를 눌렀을 때 나오는 다음과 같은 명령어를 복사합니다.
+
+<Image
+  src="/posts/deep-learning-instance-on-gcp/gcloud-cli.png"
+  w="w-88"
+  width={352}
+  height={402}
+/>
+
+이걸 터미널에서 입력해주면 인스턴스에 접속됩니다. 처음 접속 시 비밀번호를 입력하도록 하는데,
+이때 입력하는 비밀번호는 앞으로 인스턴스를 접속할 때 사용하게 됩니다. 그냥 엔터를 누르면 비밀번호 설정 없이 접속됩니다.
+
+만약 기존에 gcloud가 설치되어 있고, 새로운 계정으로 로그인 하려는 경우 `gcloud auth login`
+명령어를 입력해주면 chrome 창을 통해 로그인할 수 있습니다.
+
+# 8. VM 인스턴스 locale 설정
+
+이제 터미널에서 인스턴스로 접속을 할 수 있게 되었으니 GCP 페이지는 꺼도 되고 앞으로는 명령어 한줄만으로
+인스턴스를 접속할 수 있습니다.
+
+<Image
+  src="/posts/deep-learning-instance-on-gcp/gcloud-shell.jpeg"
+  height={344}
+/>
+
+이제 인스턴스를 딥러닝을 구동할 수 있는 환경으로 설정하는 일이 남았죠.
+
+> 인스턴스의 기본 설정은 [이곳](https://zzsza.github.io/gcp/2018/06/14/install-tensorflow-jupyter-in-gcp/#cudnn-%EC%84%A4%EC%B9%98)과 [저곳](https://shwksl101.github.io/gcp/2018/12/23/gcp_vm_custom_setting.html)의 내용을 참고하였습니다.
+
+먼저 인스턴스 첫 접속시 Warning이 뜨는 내용이기도 한, locale을 설정해주어야 합니다.
+다음과 같은 간단한 명령어로 설정할 수 있습니다.
+
+```
+sudo apt-get install language-pack-ko
+sudo locale-gen ko_KR.UTF-8
+```
+
+# 9. 패키지 설치
+
+그 후 딥러닝에 필요한 여러가지 패키지를 설치하겠습니다! 한 줄씩 입력해주세요.
+
+#### pip3 설치
+
+```
+sudo apt-get update
+sudo apt-get install python3-pip -y
+```
+
+#### CUDA 설치
+
+아래 명령어로 먼저 설치파일을 다운받아주세요.
+
+```
+curl -O http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-repo-ubuntu1604_8.0.61-1_amd64.deb
+```
+
+이후 아래 명령어를 한 줄씩 입력해주세요.
+
+```
+sudo dpkg -i ./cuda-repo-ubuntu1604_8.0.61-1_amd64.deb
+sudo apt-get update
+sudo apt-get install cuda-9-0
+```
+
+CUDA 설치 후에는 다음 명령어로 잘 설치되었는지 확인할 수 있습니다.
+
+```
+nvidia-smi
+```
+
+다음과 같은 결과가 나오면 정상설치 된 것입니다. CUDA 버전을 확인할 수 있습니다.
+
+<Image src="/posts/deep-learning-instance-on-gcp/nvidia-smi.png" height={247} />
+
+#### cuDNN 설치
+
+역시 먼저 아래 명령어로 설치파일을 다운받습니다.
+
+```
+sudo sh -c 'echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" >> /etc/apt/sources.list.d/cuda.list'
+```
+
+아래 명령어로 설치합니다.
+
+```
+sudo apt-get update
+sudo apt-get install libcudnn7-dev
+```
+
+여기서 cuDNN 설치할때는 버그가 나는 경우가 잦습니다.
+마지막 명령어를 실행할 때 "Do you want to continue?" 이렇게 나오면 `Y`를 입력하는데 "Abort."하고 설치가 중단되어서,
+다시 한 번 명령어 입력하고 Y를 다시 한 번 입력하는 경우 설치됩니다.
+
+#### 딥러닝 관련 패키지 설치
+
+```
+pip3 install tensorflow-gpu torch torchvision keras
+```
+
+#### 기타 패키지 설치
+
+```
+pip3 install jupyter sklearn matplotlib seaborn pandas
+```
+
+# 10. jupyter notebook 사용하기
+
+이제 모든 준비가 끝나갑니다. 주피터 노트북 설정만 마치면 GPU가 있는 인스턴스를 내 로컬 주피터마냥 편하게 쓸 수 있습니다.
+주피터 설정을 위해 다음 명령어로 설정 파일을 생성합니다.
+
+```
+jupyter notebook --generate-config
+```
+
+기본 설정으로 `~/.jupyter/` 폴더 안에 config 파일이 생성되게 됩니다.  
+다음 명령어로 파일을 열고,
+
+```
+vi ~/.jupyter/jupyter_notebook_config.py
+```
+
+`I`로 insert, 즉 편집 모드로 전환한 후 다음 세 가지 설정만 수정해주면 됩니다. 설정 파일의
+모든 코드들은 현재 주석처리 되어있으므로 그냥 맨 위나 맨 밑에 아래 코드를 추가하면 됩니다.
+
+```
+c = get_config()
+c.NotebookApp.ip = '123.456.78.90'
+c.NotebookApp.open_browser = False
+c.NotebookApp.port = 8888
+```
+
+- `123.456.78.90` 위치에는 GCP에서 할당받은 외부 IP를 입력합니다.
+- `8888`은 우리가 방화벽을 만들 때 설정했던 포트입니다.
+
+이제 모든 설정이 완료되었습니다. 아래 명령어로 주피터를 실행해봅니다.
+
+```
+jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root
+```
+
+> ip, port를 입력하지 않으면 오류가 뜹니다.
+
+웹 브라우저 상에서 `123.456.78.90:8888` 의 주소 형태로 ip를 알맞게 입력하면 주피터 노트북에 접속할 수 있습니다.
+최초 실행 시 다음과 같은 화면이 뜹니다.
+
+<Image
+  src="/posts/deep-learning-instance-on-gcp/jupyter-notebook.png"
+  height={336}
+/>
+
+비밀번호를 따로 설정해주지 않았기 때문에 터미널에서 보여주는 token을 입력해서 설정할 수 있습니다.
+다음과 같이 터미널에 뜬 `/?token=%%%%%`부분의 `%%%%`를 모두 복사해주세요.
+
+<Image src="/posts/deep-learning-instance-on-gcp/token.jpeg" height={77} />
+
+복사한 token을 다음과 위 브라우저 화면의 token 칸에 입력하고, 밑의 password 칸에
+원하는 비밀번호를 입력하면 비밀번호가 설정되면서 노트북에 접속할 수 있게 됩니다.
+
+주피터에서 torch 패키지를 이용해서 GPU를 쓸 수 있는지 확인해보면,
+
+<Image
+  src="/posts/deep-learning-instance-on-gcp/import-torch.png"
+  height={87}
+/>
+
+`cuda()` 메서드가 문제없이 작동되는 것을 확인할 수 있습니다. 이제 편한 환경에서
+GPU를 마음껏 사용할 수 있습니다!

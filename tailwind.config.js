@@ -5,7 +5,19 @@ module.exports = {
   darkMode: "class",
   theme: {
     fontFamily: {
-      sans: ["Pretendard", ...fontFamily.sans],
+      sans: ["SpoqaHanSansNeo", ...fontFamily.sans],
+      inter: ["Inter", ...fontFamily.sans],
+      code: [
+        "SourceCodePro",
+        "ui-monospace",
+        "SFMono-Regular",
+        "Menlo",
+        "Monaco",
+        "Consolas",
+        "Liberation Mono",
+        "Courier New",
+        "monospace",
+      ],
     },
     extend: {
       colors: {
@@ -54,6 +66,8 @@ module.exports = {
         },
       },
       spacing: {
+        3.5: "14px",
+        4.5: "18px",
         13: "52px",
         15: "60px",
         18: "72px",

@@ -18,9 +18,9 @@ import { SlashIcon } from "~/components";
 
 const mdxComponents = {
   Image: ({
-    w,
+    w = "w-130",
     src,
-    width,
+    width = 520,
     height,
     alt,
   }: {
@@ -31,7 +31,7 @@ const mdxComponents = {
     alt: string;
   }) => (
     <div className="flex items-center justify-center w-full my-10 sm:my-12">
-      <div className={`flex overflow-hidden rounded-lg ${w}`}>
+      <div className={`flex ${w}`}>
         <Image src={src} alt={alt} height={height} width={width} />
       </div>
     </div>

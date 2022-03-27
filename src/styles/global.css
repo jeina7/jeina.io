@@ -15,3 +15,50 @@
 .mdx .katex-display {
   @apply my-8 sm:my-10;
 }
+
+.mdx strong {
+  @apply font-medium;
+}
+
+.mdx h1 {
+  @apply mt-12 mb-4 text-xl font-bold sm:text-2xl sm:mb-5;
+}
+
+.mdx h4 {
+  @apply mt-8 font-bold text-gray-800 dark:text-gray-300;
+}
+
+.mdx a {
+  @apply font-normal text-blue-500 underline decoration-blue-500;
+}
+
+.mdx ul {
+  @apply my-6 ml-4.5 list-none;
+  list-style-type: square;
+}
+
+.mdx li {
+  @apply my-1.5;
+}
+
+.mdx blockquote {
+  @apply relative flex items-center pl-3 mb-4 text-sm font-normal text-gray-500 dark:text-gray-400;
+}
+
+.mdx blockquote::before {
+  @apply absolute w-0.5 mb-4 bg-blue-200 left-0.5 top-0;
+  height: calc(100% - 16px);
+  content: "";
+}
+
+.mdx code {
+  @apply font-normal text-gray-800 font-code dark:text-gray-200;
+}
+
+.mdx pre {
+  @apply px-3 py-1 my-4 overflow-scroll border border-gray-200 rounded-lg dark:border-gray-800;
+}
+
+.mdx pre code {
+  @apply text-xs;
+}
