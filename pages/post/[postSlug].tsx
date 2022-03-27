@@ -58,7 +58,7 @@ const Post = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
       <div className="flex mb-20">
         <Link href="/about" passHref>
           <div className="flex flex-col items-center space-y-3 cursor-pointer">
-            <p className="text-xs tracking-widest font-extralight">
+            <p className="text-xs tracking-widest font-extralight font-pretendard">
               {new Date(Date.parse(post.metaData.date)).toLocaleDateString(
                 "en-En",
                 {
