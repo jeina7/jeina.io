@@ -65,7 +65,7 @@ const Home = ({
         <title>{"Jeina's DevLog"}</title>
       </Head>
 
-      <div className="flex items-center justify-between w-full my-17">
+      <div className="flex items-start justify-between w-full sm:items-center my-18">
         <div className="flex flex-col">
           <p className="mb-2 text-4xl font-extrabold">Jeina</p>
           <p className="mb-1.5 text-xs text-gray-600 dark:text-gray-300">
@@ -74,28 +74,29 @@ const Home = ({
             </span>
             <span className="font-bold">GROOMATA</span>
           </p>
-          <p className="text-xs font-thin leading-relaxed text-gray-800 w-80 dark:text-gray-100">
+          <p className="text-xs font-thin leading-relaxed text-gray-800 min-w-50 max-w-54 sm:w-80 sm:max-w-max dark:text-gray-100">
             그루마타에서 풀스택 개발자를 맡고 있습니다. 웹 개발과 서버리스,
             리액트와 넥스트 제이에스를 가르칩니다.
           </p>
         </div>
-        <div className="overflow-hidden rounded-full w-34 h-34">
+        <div className="ml-5 overflow-hidden rounded-full w-30 aspect-square sm:w-34 sm:h-34">
           <Image
             src="/profile.png"
             alt="Jeina's profile"
             width={136}
             height={136}
+            layout="responsive"
           />
         </div>
       </div>
 
-      <div className="flex flex-col w-full">
-        <div className="flex items-center justify-start mb-4 dark:text-white">
+      <div className="flex flex-col w-full mb-15 sm:mb-24">
+        <div className="flex items-center justify-start mb-2.5 sm:mb-4 dark:text-white">
           <span className="mr-1.5 text-3xl font-extrabold">Post</span>
           <PostIcon className="mt-0.5" />
         </div>
 
-        <div className="flex-col space-y-16 mb-29">
+        <div className="flex-col space-y-8 sm:space-y-16 mb-18 sm:mb-25">
           {topPostSlugs.map((postSlug) => {
             const post = posts[postSlug];
             return (
@@ -110,7 +111,7 @@ const Home = ({
           })}
         </div>
 
-        <div className="flex flex-col w-full mb-24">
+        <div className="flex flex-col w-full">
           <div className="flex items-center justify-start mb-4 dark:text-white">
             <span className="mr-1.5 text-3xl font-extrabold">Tags</span>
             <TagIcon />

@@ -9,6 +9,7 @@ import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import path from "path";
 import React from "react";
 import rehypeKatex from "rehype-katex";
@@ -29,7 +30,7 @@ const mdxComponents = {
     height: number;
     alt: string;
   }) => (
-    <div className="flex items-center justify-center w-full mt-10 mb-14">
+    <div className="flex items-center justify-center w-full my-10 sm:my-12">
       <div className={`flex overflow-hidden rounded-lg ${w}`}>
         <Image src={src} alt={alt} height={height} width={width} />
       </div>
@@ -54,26 +55,30 @@ const Post = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
 
       <SlashIcon className="my-20" />
 
-      <div className="flex flex-col items-center mb-20 space-y-3">
-        <p className="text-xs tracking-widest font-extralight">
-          {new Date(Date.parse(post.metaData.date)).toLocaleDateString(
-            "en-En",
-            {
-              month: "short",
-              day: "2-digit",
-              year: "numeric",
-            }
-          )}
-        </p>
-        <div className="w-8 h-8 overflow-hidden rounded-full">
-          <Image
-            src="/profile.png"
-            width={32}
-            height={32}
-            alt="Jeina's profile"
-          />
-        </div>
-        <p className="font-light">Jeina</p>
+      <div className="flex mb-20">
+        <Link href="/about" passHref>
+          <div className="flex flex-col items-center space-y-3 cursor-pointer">
+            <p className="text-xs tracking-widest font-extralight">
+              {new Date(Date.parse(post.metaData.date)).toLocaleDateString(
+                "en-En",
+                {
+                  month: "short",
+                  day: "2-digit",
+                  year: "numeric",
+                }
+              )}
+            </p>
+            <div className="w-8 h-8 overflow-hidden rounded-full">
+              <Image
+                src="/profile.png"
+                width={32}
+                height={32}
+                alt="Jeina's profile"
+              />
+            </div>
+            <p className="font-light">Jeina</p>
+          </div>
+        </Link>
       </div>
     </>
   );

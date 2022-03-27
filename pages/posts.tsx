@@ -13,7 +13,7 @@ const Posts = ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
         <title>Posts - Jeina</title>
       </Head>
 
-      <div className="flex-col mb-24 space-y-13 mt-21">
+      <div className="flex flex-col w-full mb-15 sm:mb-24 space-y-13 mt-18 sm:mt-21">
         {Object.keys(posts)
           .sort((postSlug1, postSlug2) =>
             posts[postSlug1].date > posts[postSlug2].date ? -1 : 1

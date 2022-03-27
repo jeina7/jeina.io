@@ -14,9 +14,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <>
-      <div className="flex items-center justify-center px-5">
+      <div className="flex items-center justify-center px-6">
         <div className="flex flex-col items-center justify-center w-full max-w-141">
-          <div className="flex items-center justify-between w-full mt-15">
+          <div className="flex items-center justify-between w-full mt-10 sm:mt-15">
             <div className="flex items-center space-x-6 text-xs font-medium text-gray-500 dark:text-gray-300">
               <Link href="/" passHref>
                 <span
