@@ -45,7 +45,7 @@ const Post = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
         <title>{`${post.metaData.title} - Jeina`}</title>
       </Head>
 
-      <p className="mb-5 text-4xl font-black leading-snug mt-18">
+      <p className="mb-5 text-4xl font-black leading-snug mt-18 font-pretendard">
         {post.metaData.title}
       </p>
 

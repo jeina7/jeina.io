@@ -7,6 +7,7 @@ module.exports = {
     fontFamily: {
       sans: ["SpoqaHanSansNeo", ...fontFamily.sans],
       inter: ["Inter", ...fontFamily.sans],
+      pretendard: ["Pretendard", ...fontFamily.sans],
       code: [
         "SourceCodePro",
         "ui-monospace",
