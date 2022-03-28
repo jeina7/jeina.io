@@ -10,8 +10,7 @@ export default function Document() {
           integrity="sha384-Um5gpz1odJg5Z4HAmzPtgZKdTBHZdw8S29IecapCSB31ligYPhHQZMIlWLYQGVoc"
           crossOrigin="anonymous"
         />
-        {process.env.NODE_ENV === "production" &&
-          typeof window !== "undefined" &&
+        {typeof window !== "undefined" &&
           window.location.hostname === "jeina.io" && (
             <script
               defer
