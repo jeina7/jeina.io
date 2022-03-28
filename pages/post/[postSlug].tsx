@@ -45,11 +45,11 @@ const Post = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
         <title>{`${post.metaData.title} - Jeina`}</title>
       </Head>
 
-      <p className="mb-5 text-4xl font-black leading-snug mt-18 font-pretendard">
+      <p className="mb-5 text-4xl sm:text-4.5xl font-black leading-snug mt-18 font-pretendard">
         {post.metaData.title}
       </p>
 
-      <div className="w-full font-extralight leading-more-relaxed mdx">
+      <div className="w-full mdx">
         <MDXRemote {...post.content} components={mdxComponents} />
       </div>
 

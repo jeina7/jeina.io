@@ -4,12 +4,24 @@
 @tailwind components;
 @tailwind utilities;
 
-.min-h-without-navbar {
-  min-height: calc(100vh - 88px);
+@layer utilities {
+  .text-body {
+    font-size: 15px;
+    line-height: 1.75rem /* 28px */;
+  }
+
+  .text-4\.5xl {
+    font-size: 2.375rem /* 42px */;
+    line-height: 1.4;
+  }
+
+  .min-h-without-navbar {
+    min-height: calc(100vh - 88px);
+  }
 }
 
 .mdx p {
-  @apply mb-4;
+  @apply mb-4 text-sm font-light leading-7 sm:text-body;
 }
 
 .mdx .katex-display {
@@ -33,7 +45,7 @@
 }
 
 .mdx ul {
-  @apply my-6 ml-4.5 list-none;
+  @apply my-6 ml-4.5 list-none text-sm sm:text-body;
   list-style-type: square;
 }
 
@@ -42,12 +54,16 @@
 }
 
 .mdx blockquote {
-  @apply relative flex items-center pl-3 mb-4 text-sm font-normal text-gray-500 dark:text-gray-400;
+  @apply relative flex items-center pl-3 mb-4 font-normal text-gray-500 dark:text-gray-400;
+}
+
+.mdx blockquote p {
+  @apply text-sm leading-relaxed;
 }
 
 .mdx blockquote::before {
-  @apply absolute w-0.5 mb-4 bg-blue-200 left-0.5 top-0;
-  height: calc(100% - 16px);
+  @apply absolute w-0.5 mb-4 bg-blue-200 left-0.5 top-0.5;
+  height: calc(100% - 22px);
   content: "";
 }
 
@@ -56,7 +72,7 @@
 }
 
 .mdx pre {
-  @apply px-3 py-1 my-4 overflow-scroll border border-gray-200 rounded-lg dark:border-gray-800;
+  @apply px-3 pt-0.5 pb-1.5 my-4 overflow-scroll border border-gray-200 rounded-lg dark:border-gray-800;
 }
 
 .mdx pre code {
