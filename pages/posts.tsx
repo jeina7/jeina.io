@@ -1,17 +1,23 @@
 import fs from "fs";
 import matter from "gray-matter";
 import type { GetStaticProps, InferGetStaticPropsType } from "next";
+import { NextSeo, NextSeoProps } from "next-seo";
 import Head from "next/head";
 import Link from "next/link";
 import { PostCard, ViewIcon } from "~/components";
+import { defaultOpenGraph, defaultSeo } from "~/lib/seo";
 import { posts } from "~/utils/types";
+
+const seo: NextSeoProps = {
+  title: "Posts",
+  openGraph: { ...defaultOpenGraph },
+  ...defaultSeo,
+};
 
 const Posts = ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <>
-      <Head>
-        <title>Posts - Jeina</title>
-      </Head>
+      <NextSeo {...seo}/>
 
       <div className="flex flex-col w-full mb-15 sm:mb-24 space-y-13 mt-18 sm:mt-21">
         {Object.keys(posts)

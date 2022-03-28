@@ -7,6 +7,7 @@ import type {
 } from "next";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
+import { NextSeo, NextSeoProps } from "next-seo";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,6 +16,7 @@ import React from "react";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import { SlashIcon } from "~/components";
+import { defaultSeo } from "~/lib/seo";
 
 const mdxComponents = {
   Image: ({
@@ -39,11 +41,26 @@ const mdxComponents = {
 };
 
 const Post = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
+  
+  const seo: NextSeoProps = {
+    title: post.metaData.title,
+    description: post.metaData.title,
+    openGraph: {
+      images: [{ url: "/path/to/image" }],
+      type: "article",
+      article: {
+        authors: ["jeina"],
+        publishedTime: post.metaData.date,
+        tags: post.metaData.tags,
+      },
+    },
+    ...defaultSeo,
+    titleTemplate: "%s | Jeina's Devlog"
+  };
+
   return (
     <>
-      <Head>
-        <title>{`${post.metaData.title} - Jeina`}</title>
-      </Head>
+      <NextSeo {...seo} />
 
       <p className="mb-5 text-4xl sm:text-4.5xl font-black leading-snug mt-18 font-pretendard">
         {post.metaData.title}

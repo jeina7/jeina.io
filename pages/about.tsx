@@ -1,14 +1,21 @@
 import type { NextPage } from "next";
+import { NextSeo, NextSeoProps } from "next-seo";
 import Head from "next/head";
 import Image from "next/image";
 import { GithubLogo, InstagramLogo, YoutubeLogo } from "~/components";
+import { defaultOpenGraph, defaultSeo } from "~/lib/seo";
+
+const seo: NextSeoProps = {
+  title: "About",
+  openGraph: { ...defaultOpenGraph },
+  ...defaultSeo,
+};
+
 
 const About: NextPage = () => {
   return (
     <>
-      <Head>
-        <title>About - Jeina</title>
-      </Head>
+      <NextSeo {...seo} />
 
       <div className="relative flex flex-col items-center w-full pt-23 min-h-without-navbar">
         <div className="mb-8 overflow-hidden rounded-full w-45 h-45">

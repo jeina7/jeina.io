@@ -5,21 +5,33 @@ import type {
   GetStaticProps,
   InferGetStaticPropsType,
 } from "next";
+import { NextSeo, NextSeoProps } from "next-seo";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import { PostCard, ViewIcon } from "~/components";
+import { defaultOpenGraph, defaultSeo } from "~/lib/seo";
 import { posts } from "~/utils/types";
 
 const Tag = ({
   tag,
   posts,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
+  
+  const seo: NextSeoProps = {
+    title: tag,
+    description: `Posts about ${tag}.`,
+    openGraph: {
+      images: [{ url: "/path/to/image" }],
+      ...defaultOpenGraph
+    },
+    ...defaultSeo,
+    titleTemplate: `Jeina's Devlog | #${tag}`
+  };
+  
   return (
     <>
-      <Head>
-        <title>{`${tag} - Jeina`}</title>
-      </Head>
+      <NextSeo {...seo} />
 
       <p className="flex items-center justify-start w-full mb-12 text-4xl font-black mt-21">
         #{tag}

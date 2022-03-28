@@ -1,10 +1,12 @@
 import fs from "fs";
 import matter from "gray-matter";
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
+import { NextSeo, NextSeoProps } from "next-seo";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { PostCard, PostIcon, TagIcon, ViewIcon } from "~/components";
+import { defaultOpenGraph, defaultSeo } from "~/lib/seo";
 import { posts } from "~/utils/types";
 
 const labelColors = [
@@ -52,6 +54,14 @@ const labelColors = [
   ],
 ];
 
+const seo: NextSeoProps = {
+  title: "Jeina's Devlog",
+  openGraph: { ...defaultOpenGraph },
+  ...defaultSeo,
+  titleTemplate: "%s"
+};
+
+
 const Home = ({
   posts,
   tags,
@@ -61,9 +71,11 @@ const Home = ({
 
   return (
     <>
-      <Head>
+      {/* <Head>
         <title>{"Jeina's DevLog"}</title>
-      </Head>
+      </Head> */}
+
+      <NextSeo {...seo} />
 
       <div className="flex items-start justify-between w-full sm:items-center my-18">
         <div className="flex flex-col">
