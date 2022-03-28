@@ -51,6 +51,12 @@ const App = ({ Component, pageProps }: AppProps) => {
           as="font"
           crossOrigin="anonymous"
         />
+        <link
+          rel="preload"
+          href="/fonts/Pretendard/Pretendard-Black.woff2"
+          as="font"
+          crossOrigin="anonymous"
+        />
       </Head>
 
       <ThemeProvider attribute="class">
