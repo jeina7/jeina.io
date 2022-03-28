@@ -2,6 +2,7 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
+import { FontLoader } from "./FontLoader";
 import { MoonIcon, SearchIcon, SunIcon } from "./icons";
 
 interface LayoutProps {
@@ -67,6 +68,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
 
           {children}
+          <FontLoader />
         </div>
       </div>
     </>
