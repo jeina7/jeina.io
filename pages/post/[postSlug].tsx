@@ -55,7 +55,6 @@ const Post = ({
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const seo: NextSeoProps = {
     title: post.metaData.title,
-    description: post.metaData.title,
     openGraph: {
       images: [{ url: "/path/to/image" }],
       type: "article",
@@ -66,6 +65,7 @@ const Post = ({
       },
     },
     ...defaultSeo,
+    description: `${post.metaData.description} ${post.metaData.tags.join(" ")}`,
   };
 
   return (

@@ -1,13 +1,15 @@
 import type { NextPage } from "next";
 import { NextSeo, NextSeoProps } from "next-seo";
 import Image from "next/image";
-import { GithubLogo, InstagramLogo, YoutubeLogo } from "~/components";
+import { GithubLogo } from "~/components";
 import { defaultOpenGraph, defaultSeo } from "~/lib/seo";
 
 const seo: NextSeoProps = {
   title: "About",
   openGraph: { ...defaultOpenGraph },
   ...defaultSeo,
+  description:
+    "Jeina의 블로그입니다. 다양한 분야의 기술에 관심이 많습니다. 어렵고 모호한 기술을 엄밀하게 이해하고 쉽게 풀어 쓰는 것을 좋아합니다. '왜 그렇게 생각해?' 라는 질문을 가장 좋아합니다.",
 };
 
 const About: NextPage = () => {
@@ -31,7 +33,7 @@ const About: NextPage = () => {
             <span className="mr-1 font-light">Data Engineer in</span>
             <span className="font-bold">KAKAO</span>
           </p>
-          <div className="flex flex-col items-center text-sm leading-more-relaxed font-extralight sm:space-y-1">
+          <div className="flex flex-col items-center text-sm font-light leading-more-relaxed sm:space-y-1">
             <p className="mb-2 sm:mb-0">
               다양한 분야의 기술에 관심이 많습니다.
             </p>

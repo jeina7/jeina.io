@@ -6,12 +6,10 @@ import type {
   InferGetStaticPropsType,
 } from "next";
 import { NextSeo, NextSeoProps } from "next-seo";
-import Head from "next/head";
-import Link from "next/link";
 import React from "react";
-import { PostCard, ViewIcon } from "~/components";
+import { PostCard } from "~/components";
 import { defaultOpenGraph, defaultSeo } from "~/lib/seo";
-import { posts } from "~/utils/types";
+import { postMetadata, posts } from "~/utils/types";
 
 const Tag = ({
   tag,
@@ -19,12 +17,12 @@ const Tag = ({
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const seo: NextSeoProps = {
     title: tag,
-    description: `Posts about ${tag}.`,
     openGraph: {
       images: [{ url: "/path/to/image" }],
       ...defaultOpenGraph,
     },
     ...defaultSeo,
+    description: `${tag} – Jeina의 블로그입니다`,
   };
 
   return (
@@ -71,7 +69,7 @@ export const getStaticProps: GetStaticProps<{
     const { data: metaData } = matter(postFile);
     const tags = metaData["tags"];
     if (params && tags.includes(params.tag as string))
-      posts[postSlug] = metaData;
+      posts[postSlug] = metaData as postMetadata;
   });
 
   return {
@@ -88,7 +86,7 @@ export const getStaticPaths: GetStaticPaths = () => {
       "utf-8"
     );
     const { data: metaData } = matter(postFile);
-    posts[postSlug] = metaData;
+    posts[postSlug] = metaData as postMetadata;
   });
 
   const tags = [

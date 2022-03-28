@@ -1,13 +1,12 @@
 import fs from "fs";
 import matter from "gray-matter";
-import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
+import type { GetStaticProps, InferGetStaticPropsType } from "next";
 import { NextSeo, NextSeoProps } from "next-seo";
-import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { PostCard, PostIcon, TagIcon, ViewIcon } from "~/components";
+import { PostCard, PostIcon, TagIcon } from "~/components";
 import { defaultOpenGraph, defaultSeo } from "~/lib/seo";
-import { posts } from "~/utils/types";
+import { postMetadata, posts } from "~/utils/types";
 
 const labelColors = [
   [
@@ -59,6 +58,8 @@ const seo: NextSeoProps = {
   openGraph: { ...defaultOpenGraph },
   ...defaultSeo,
   titleTemplate: "%s",
+  description:
+    "Jeina의 블로그입니다. 데이터 엔지니어링을 주로 다룹니다. 웹 개발과 서버리스, 리액트와 넥스트 제이에스를 취미삼고 있습니다.",
 };
 
 const Home = ({
@@ -169,7 +170,7 @@ export const getStaticProps: GetStaticProps<{
       "utf-8"
     );
     const { data: metaData } = matter(postFile);
-    posts[postSlug] = metaData;
+    posts[postSlug] = metaData as postMetadata;
   });
 
   const topPostSlugs = Object.keys(posts)

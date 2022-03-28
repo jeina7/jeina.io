@@ -2,11 +2,9 @@ import fs from "fs";
 import matter from "gray-matter";
 import type { GetStaticProps, InferGetStaticPropsType } from "next";
 import { NextSeo, NextSeoProps } from "next-seo";
-import Head from "next/head";
-import Link from "next/link";
-import { PostCard, ViewIcon } from "~/components";
+import { PostCard } from "~/components";
 import { defaultOpenGraph, defaultSeo } from "~/lib/seo";
-import { posts } from "~/utils/types";
+import { postMetadata, posts } from "~/utils/types";
 
 const seo: NextSeoProps = {
   title: "Posts",
@@ -52,7 +50,7 @@ export const getStaticProps: GetStaticProps<{
       "utf-8"
     );
     const { data: metaData } = matter(postFile);
-    posts[postSlug] = metaData;
+    posts[postSlug] = metaData as postMetadata;
   });
 
   return {
