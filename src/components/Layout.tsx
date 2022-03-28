@@ -11,7 +11,7 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   return (
     <>
@@ -56,10 +56,16 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             <div className="flex items-center space-x-2 text-gray-900 dark:text-white">
               <button
-                onClick={() => setTheme(theme == "dark" ? "light" : "dark")}
+                onClick={() =>
+                  setTheme(resolvedTheme == "dark" ? "light" : "dark")
+                }
                 className="transition duration-200 bg-gray-100 rounded-md w-7 h-7 hover:ring-2 hover:ring-gray-200 dark:bg-gray-600 dark:hover:ring-gray-400"
               >
-                {theme == "light" ? <MoonIcon /> : <SunIcon />}
+                {resolvedTheme == "light" ? (
+                  <MoonIcon className="pointer-events-none" />
+                ) : (
+                  <SunIcon className="pointer-events-none" />
+                )}
               </button>
               <button className="transition duration-200 rounded-md w-7 h-7 hover:ring-2 hover:ring-gray-200 dark:hover:ring-gray-700">
                 <SearchIcon />
