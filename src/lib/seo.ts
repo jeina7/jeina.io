@@ -17,7 +17,7 @@ export const defaultSeo: Partial<NextSeoProps> = {
 export const defaultOpenGraph: Partial<OpenGraph> = {
   images: [
     {
-      url: "/profile.png",
+      url: "https://jeina.io/_next/image?url=%2Fprofile_1200x600.png&w=3840&q=75",
     },
   ],
 };

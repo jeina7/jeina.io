@@ -86,7 +86,7 @@ const Home = ({
         </div>
         <div className="ml-5 overflow-hidden rounded-full w-30 aspect-square sm:w-34 sm:h-34">
           <Image
-            src="/profile.png"
+            src="/profile_240x240.png"
             alt="Jeina's profile"
             width={136}
             height={136}
