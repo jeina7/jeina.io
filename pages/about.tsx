@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import { NextSeo, NextSeoProps } from "next-seo";
-import Head from "next/head";
 import Image from "next/image";
 import { GithubLogo, InstagramLogo, YoutubeLogo } from "~/components";
 import { defaultOpenGraph, defaultSeo } from "~/lib/seo";

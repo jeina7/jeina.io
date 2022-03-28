@@ -58,9 +58,8 @@ const seo: NextSeoProps = {
   title: "Jeina's Devlog",
   openGraph: { ...defaultOpenGraph },
   ...defaultSeo,
-  titleTemplate: "%s"
+  titleTemplate: "%s",
 };
-
 
 const Home = ({
   posts,
@@ -71,10 +70,6 @@ const Home = ({
 
   return (
     <>
-      {/* <Head>
-        <title>{"Jeina's DevLog"}</title>
-      </Head> */}
-
       <NextSeo {...seo} />
 
       <div className="flex items-start justify-between w-full sm:items-center my-18">

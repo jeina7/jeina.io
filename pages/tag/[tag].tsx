@@ -25,14 +25,13 @@ const Tag = ({
       ...defaultOpenGraph,
     },
     ...defaultSeo,
-    titleTemplate: `Jeina's Devlog | #${tag}`,
   };
 
   return (
     <>
       <NextSeo {...seo} />
 
-      <p className="flex items-center justify-start w-full mb-12 text-4xl font-black mt-21">
+      <p className="flex items-center justify-start w-full mb-12 text-4xl font-black mt-21 font-pretendard">
         #{tag}
       </p>
 

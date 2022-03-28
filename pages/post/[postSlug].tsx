@@ -8,7 +8,6 @@ import type {
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import { NextSeo, NextSeoProps } from "next-seo";
-import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import path from "path";
@@ -67,7 +66,6 @@ const Post = ({
       },
     },
     ...defaultSeo,
-    titleTemplate: "%s | Jeina's Devlog",
   };
 
   return (
