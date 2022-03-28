@@ -17,7 +17,7 @@ export const defaultSeo: Partial<NextSeoProps> = {
 export const defaultOpenGraph: Partial<OpenGraph> = {
   images: [
     {
-      url: "/path/to/img",
+      url: "/profile.png",
     },
   ],
 };
