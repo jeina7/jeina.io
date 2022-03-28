@@ -97,7 +97,7 @@ const Post = ({
             </p>
             <div className="w-8 h-8 overflow-hidden rounded-full">
               <Image
-                src="/profile.png"
+                src="/profile_240x240.png"
                 width={32}
                 height={32}
                 alt="Jeina's profile"

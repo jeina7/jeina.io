@@ -18,7 +18,7 @@ const About: NextPage = () => {
       <div className="relative flex flex-col items-center w-full pt-23 min-h-without-navbar">
         <div className="mb-8 overflow-hidden rounded-full w-45 h-45">
           <Image
-            src="/profile.png"
+            src="/profile_240x240.png"
             alt="Jeina's profile"
             width={180}
             height={180}
