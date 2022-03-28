@@ -4,6 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
+::selection {
+  @apply text-gray-900 bg-teal-200 dark:bg-teal-300;
+}
+
 @layer utilities {
   .text-body {
     font-size: 15px;
