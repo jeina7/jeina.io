@@ -8,6 +8,10 @@
   @apply text-gray-900 bg-teal-200 dark:bg-teal-300;
 }
 
+body {
+  @apply bg-white dark:bg-gray-900;
+}
+
 @layer utilities {
   .text-body {
     font-size: 15px;
@@ -40,8 +44,13 @@
   @apply mt-12 mb-4 text-xl font-bold sm:text-2xl sm:mb-5;
 }
 
-.mdx h4 {
-  @apply mt-8 font-bold text-gray-800 dark:text-gray-300;
+.mdx h2 {
+  @apply mt-8 mb-2 text-lg font-bold sm:text-xl;
+  line-height: 2rem;
+}
+
+.mdx h3 {
+  @apply mt-6 mb-1 text-base font-bold sm:text-lg;
 }
 
 .mdx a {
@@ -53,8 +62,13 @@
   list-style-type: square;
 }
 
+.mdx ol {
+  @apply my-6 ml-4.5 list-none text-sm sm:text-body;
+  list-style-type: decimal;
+}
+
 .mdx li {
-  @apply my-1.5;
+  @apply my-1.5 font-light;
 }
 
 .mdx blockquote {

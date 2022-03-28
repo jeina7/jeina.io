@@ -17,18 +17,17 @@ const Tag = ({
   tag,
   posts,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  
   const seo: NextSeoProps = {
     title: tag,
     description: `Posts about ${tag}.`,
     openGraph: {
       images: [{ url: "/path/to/image" }],
-      ...defaultOpenGraph
+      ...defaultOpenGraph,
     },
     ...defaultSeo,
-    titleTemplate: `Jeina's Devlog | #${tag}`
+    titleTemplate: `Jeina's Devlog | #${tag}`,
   };
-  
+
   return (
     <>
       <NextSeo {...seo} />

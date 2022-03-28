@@ -17,7 +17,7 @@ const seo: NextSeoProps = {
 const Posts = ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <>
-      <NextSeo {...seo}/>
+      <NextSeo {...seo} />
 
       <div className="flex flex-col w-full mb-15 sm:mb-24 space-y-13 mt-18 sm:mt-21">
         {Object.keys(posts)

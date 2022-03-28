@@ -11,7 +11,6 @@ const seo: NextSeoProps = {
   ...defaultSeo,
 };
 
-
 const About: NextPage = () => {
   return (
     <>

@@ -15,33 +15,45 @@ import path from "path";
 import React from "react";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
-import { SlashIcon } from "~/components";
+import { SlashIcon, ThreeDots } from "~/components";
 import { defaultSeo } from "~/lib/seo";
 
-const mdxComponents = {
-  Image: ({
-    w = "w-130",
-    src,
-    width = 520,
-    height,
-    alt,
-  }: {
-    w: string;
-    src: string;
-    width: number;
-    height: number;
-    alt: string;
-  }) => (
-    <div className="flex items-center justify-center w-full my-10 sm:my-12">
-      <div className={`flex ${w}`}>
-        <Image src={src} alt={alt} height={height} width={width} />
+const mdxComponents = (postSlug: string) => {
+  return {
+    ThreeDots: () => (
+      <ThreeDots className="text-gray-400 my-14 sm:my-20 dark:text-gray-500" />
+    ),
+    Image: ({
+      w = "w-130",
+      src,
+      width = 520,
+      height,
+      alt,
+    }: {
+      w: string;
+      src: string;
+      width: number;
+      height: number;
+      alt: string;
+    }) => (
+      <div className="flex items-center justify-center w-full my-10 sm:my-12">
+        <div className={`flex ${w}`}>
+          <Image
+            src={`/posts/${postSlug}/images/${src}`}
+            alt={alt}
+            height={height}
+            width={width}
+          />
+        </div>
       </div>
-    </div>
-  ),
+    ),
+  };
 };
 
-const Post = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  
+const Post = ({
+  post,
+  postSlug,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const seo: NextSeoProps = {
     title: post.metaData.title,
     description: post.metaData.title,
@@ -55,7 +67,7 @@ const Post = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
       },
     },
     ...defaultSeo,
-    titleTemplate: "%s | Jeina's Devlog"
+    titleTemplate: "%s | Jeina's Devlog",
   };
 
   return (
@@ -67,7 +79,7 @@ const Post = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
       </p>
 
       <div className="w-full mdx">
-        <MDXRemote {...post.content} components={mdxComponents} />
+        <MDXRemote {...post.content} components={mdxComponents(postSlug)} />
       </div>
 
       <SlashIcon className="my-20" />
@@ -108,6 +120,7 @@ export const getStaticProps: GetStaticProps<{
     };
     content: MDXRemoteSerializeResult<Record<string, unknown>>;
   };
+  postSlug: string;
 }> = async ({ params }) => {
   const postFile = fs.readFileSync(
     path.join(`public/posts/${params?.postSlug}/${params?.postSlug}.mdx`),
@@ -125,7 +138,7 @@ export const getStaticProps: GetStaticProps<{
   };
 
   return {
-    props: { post },
+    props: { post, postSlug: params?.postSlug as string },
   };
 };
 

@@ -15,3 +15,5 @@ export * from "./YoutubeLogo";
 export * from "./SlashIcon";
 
 export * from "./SunIcon";
+
+export * from "./ThreeDots";

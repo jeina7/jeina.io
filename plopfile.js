@@ -62,4 +62,26 @@ module.exports = function (plop) {
       },
     ],
   });
+
+  plop.setGenerator("post", {
+    description: "Generates post template",
+    prompts: [
+      {
+        type: "input",
+        name: "name",
+        message: "What is your post slug?",
+      },
+    ],
+    actions: [
+      {
+        type: "add",
+        path: "public/posts/{{name}}/{{name}}.mdx",
+        templateFile: "plop-templates/post.mdx.hbs",
+      },
+      {
+        type: "add",
+        path: "public/posts/{{name}}/images/a",
+      },
+    ],
+  });
 };
