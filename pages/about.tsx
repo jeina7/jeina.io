@@ -47,8 +47,6 @@ const About: NextPage = () => {
           <a href="https://github.com/jeina7">
             <GithubLogo className="cursor-pointer" />
           </a>
-          <InstagramLogo className="mt-px" />
-          <YoutubeLogo />
         </div>
       </div>
     </>

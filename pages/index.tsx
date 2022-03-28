@@ -80,7 +80,7 @@ const Home = ({
             <span className="font-bold">KAKAO</span>
           </p>
           <p className="text-xs font-light leading-relaxed text-gray-800 min-w-50 max-w-54 sm:w-80 sm:max-w-max dark:text-gray-100">
-            데이터와 관련된 엔지니어링을 주로 다루고, 웹 개발과 서버리스,
+            데이터와 관련된 엔지니어링을 주로 다룹니다. 웹 개발과 서버리스,
             리액트와 넥스트 제이에스를 취미삼고 있습니다.
           </p>
         </div>
